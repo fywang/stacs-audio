@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 2.8.9)
+
+FIND_PACKAGE(YARP REQUIRED)
+INCLUDE_DIRECTORIES(${YARP_INCLUDE_DIRS})
+LINK_LIBRARIES(${YARP_LIBRARIES})
+
+ADD_EXECUTABLE(audio-send audio-send.cpp)
+ADD_EXECUTABLE(audio-recv audio-recv.cpp)
+ADD_EXECUTABLE(audio-sendlist audio-sendlist.cpp)
+ADD_EXECUTABLE(stacs-audio stacs-audio.cpp)
+
+TARGET_LINK_LIBRARIES(audio-send ${YARP_LIBRARIES})
+TARGET_LINK_LIBRARIES(audio-recv ${YARP_LIBRARIES})
+TARGET_LINK_LIBRARIES(audio-sendlist ${YARP_LIBRARIES})
+TARGET_LINK_LIBRARIES(stacs-audio ${YARP_LIBRARIES})
