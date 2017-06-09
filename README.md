@@ -6,7 +6,7 @@ There are also some testing programs (adapted from the YARP examples) to send an
 
 Building using CMake:
 
-  mkdir build
-  cd build
-  ccmake ../
-  make
+	mkdir build
+	cd build
+	ccmake ../
+	make
