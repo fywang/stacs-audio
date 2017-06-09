@@ -40,7 +40,7 @@ int main(int argc, char ** argv) {
   }
 
   // Get wavfile from list
-  std::ifstream wavlist(filename);
+  std::ifstream wavlist(filename.c_str());
   std::string wavline;
   std::vector<std::string> wavfile;
   wavfile.clear();
