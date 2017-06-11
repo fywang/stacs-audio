@@ -85,7 +85,7 @@ int main(int argc, char ** argv) {
 
     // Close sound file
     printf("Closing sound file\n");
-    sReader.close();
+    //sReader.close();
   }
   
   // exit successfully
