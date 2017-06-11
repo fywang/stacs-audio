@@ -10,8 +10,6 @@
 * Main entry point
 **************************************************************************/
 
-
-
 // Main
 //
 int main(int argc, char ** argv) {
@@ -56,6 +54,9 @@ int main(int argc, char ** argv) {
 
   for (std::size_t i = 0; i < wavfile.size(); ++i) {
     printf("%s\n", wavfile[i].c_str());
+    if (wavfile[i][0] == '%') {
+      continue;
+    }
 
     // Open sound file
     printf("Opening sound file");
