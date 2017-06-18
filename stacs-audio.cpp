@@ -48,6 +48,10 @@ int main(int argc, char ** argv) {
   // Close list
   wavlist.close();
 
+  // Writing order of files
+  std::ofstream wavorder;
+  wavorder.open("wavorder.txt");
+
   std::random_shuffle (wavfile.begin(), wavfile.end());
 
   bool finish = false;
@@ -65,6 +69,9 @@ int main(int argc, char ** argv) {
       printf("Error: cannot open file %s\n", wavfile[i].c_str());
       return -1;
     } 
+    
+    // Write what was played to file
+    wavorder << wavfile[i] << std::endl;
 
     // Send the data to the network
     int CHUNK_SIZE = 4096;
@@ -108,6 +115,9 @@ int main(int argc, char ** argv) {
     printf("Closing sound file\n");
     //sReader.close();
   }
+
+  // Close writing out
+  wavorder.close();
   
   // exit successfully
   return 0;
