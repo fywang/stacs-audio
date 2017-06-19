@@ -52,32 +52,35 @@ int main(int argc, char ** argv) {
   std::ofstream wavorder;
   wavorder.open("wavorder.txt");
 
-  std::random_shuffle (wavfile.begin(), wavfile.end());
-
   bool finish = false;
 
-  for (std::size_t i = 0; i < wavfile.size(); ++i) {
-    printf("%s\n", wavfile[i].c_str());
-    if (wavfile[i][0] == '%') {
+  // Stream until receive stop signal
+  for (std::size_t i = 0;; ++i) {
+    std::size_t ii = i % wavfile.size();
+    if (ii == 0) {
+      std::random_shuffle (wavfile.begin(), wavfile.end());
+    }
+    printf("%s\n", wavfile[ii].c_str());
+    if (wavfile[ii][0] == '%') {
       continue;
     }
 
     // Open sound file
     printf("Opening sound file");
     yarp::sig::file::soundStreamReader sReader;
-    if (sReader.open(wavfile[i].c_str()) == false) {
-      printf("Error: cannot open file %s\n", wavfile[i].c_str());
+    if (sReader.open(wavfile[ii].c_str()) == false) {
+      printf("Error: cannot open file %s\n", wavfile[ii].c_str());
       return -1;
     } 
     
     // Write what was played to file
-    wavorder << wavfile[i] << std::endl;
+    wavorder << wavfile[ii] << std::endl;
 
     // Send the data to the network
     int CHUNK_SIZE = 4096;
     double PLAY_RATE = 2;
     yarp::sig::Sound s;
-    printf("Streaming file %s\n", wavfile[i].c_str());
+    printf("Streaming file %s\n", wavfile[ii].c_str());
 
     bool complete = false;
     sReader.rewind();
@@ -85,7 +88,6 @@ int main(int argc, char ** argv) {
     do {
       // Check if requested
       yarp::os::Bottle *b = pRequest.read();
-      printf("Requesting samples: %d entries left\n", b->get(0).asInt());
       if (b->get(0).asInt() < 0) {
         finish = true;
         break;
@@ -95,25 +97,15 @@ int main(int argc, char ** argv) {
       int read_samples = sReader.readBlock(s,CHUNK_SIZE);
       if (read_samples<CHUNK_SIZE) complete=true;
 
-      static double old = yarp::os::Time::now();
-      printf("from sample %d to sample %d, time %.3f\n", current_pos, current_pos+read_samples, yarp::os::Time::now()-old); 
-      old = yarp::os::Time::now();
-      double del = (((double) read_samples) * PLAY_RATE)/16000;
-      //yarp::os::Time::delay(del);
+      printf("  from sample %d to sample %d\n", current_pos, current_pos+read_samples); 
 
       pAudio.write(s); //use ports
     } while(!complete);
 
     if (finish) {
       printf("Stacs no longer requesting data\n");
-      printf("Closing sound file\n");
-      sReader.close();
       break;
     }
-
-    // Close sound file
-    printf("Closing sound file\n");
-    //sReader.close();
   }
 
   // Close writing out
