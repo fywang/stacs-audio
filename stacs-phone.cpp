@@ -48,9 +48,9 @@ int main(int argc, char ** argv) {
   // Close list
   wavlist.close();
 
-  // Writing order of files
-  std::ofstream wavorder;
-  wavorder.open("wavorder.txt");
+  // Writing order of phones
+  std::ofstream phnorder;
+  phnorder.open("phnorder.txt");
   
   // Phones
   std::ifstream phnlist;
@@ -80,9 +80,6 @@ int main(int argc, char ** argv) {
       return -1;
     } 
     
-    // Write what was played to file
-    wavorder << wavfile[ii] << std::endl;
-
     // Send the data to the network
     yarp::sig::Sound s;
     printf("Streaming file %s\n", wavfile[ii].c_str());
@@ -97,8 +94,10 @@ int main(int argc, char ** argv) {
       // Get phone size
       std::stringstream phnstream(phnline);
       int tstart, tfinish;
+      std::string phone;
       phnstream >> tstart;
       phnstream >> tfinish;
+      phnstream >> phone;
       int PHONE_SIZE = tfinish - tstart;
      
       // Check if requested
@@ -111,6 +110,9 @@ int main(int argc, char ** argv) {
 
       int current_pos  = sReader.getIndex(); 
       int read_samples = sReader.readBlock(s,PHONE_SIZE);
+    
+      // Write what was played to file
+      phnorder << PHONE_SIZE << " " << phone << std::endl;
 
       printf("  from sample %d to sample %d\n", current_pos, current_pos+read_samples); 
 
@@ -127,7 +129,7 @@ int main(int argc, char ** argv) {
   }
 
   // Close writing out
-  wavorder.close();
+  phnorder.close();
   
   // exit successfully
   return 0;
