@@ -59,6 +59,9 @@ int main(int argc, char ** argv) {
 
   bool finish = false;
 
+  std::random_device r;
+  std::srand(r());
+
   // Stream until receive stop signal
   for (std::size_t i = 0;; ++i) {
     std::size_t ii = i % wavfile.size();
